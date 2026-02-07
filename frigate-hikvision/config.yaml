@@ -1,5 +1,5 @@
 name: "Frigate (Hikvision Mod)"
-version: "0.16.4-7"  # <--- Version Bump
+version: "0.16.4-8"
 slug: "frigate_hikvision"
 description: "Frigate NVR with Position-Based ONVIF"
 url: "https://github.com/blakeblackshear/frigate"
@@ -12,6 +12,10 @@ boot: auto
 ingress: true
 ingress_port: 5000
 panel_icon: mdi:cctv
+# PERMISSIONS SECTION (The Fix)
+privileged: true
+security:
+  - privileged
 ports:
   5000/tcp: 5000
   8554/tcp: 8554
@@ -20,7 +24,7 @@ ports:
 map:
   - addon_config:rw
   - media:rw
-# THIS IS THE FIX FOR "No VA display found"
 devices:
   - /dev/dri:/dev/dri
   - /dev/dma_heap:/dev/dma_heap
+  - /dev/bus/usb:/dev/bus/usb
