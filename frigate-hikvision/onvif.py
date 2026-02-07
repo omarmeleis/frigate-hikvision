@@ -1,13 +1,14 @@
 """Configure and control camera via onvif."""
 
 import logging
+import asyncio      # <--- FIX 1: Added back (Required for Frigate engine)
 from enum import Enum
 from importlib.util import find_spec
 from pathlib import Path
 
 import numpy
 import requests
-import time
+import time         # <--- We KEEP this (Required for your new position logic)
 from onvif import ONVIFCamera, ONVIFError
 from zeep.exceptions import Fault, TransportError
 from zeep.transports import Transport
@@ -40,6 +41,7 @@ class OnvifController:
     def __init__(
         self, config: FrigateConfig, ptz_metrics: dict[str, PTZMetrics]
     ) -> None:
+        self.loop = asyncio.get_event_loop()  # <--- FIX 2: Added back (Required for autotracker)
         self.cams: dict[str, ONVIFCamera] = {}
         self.config = config
         self.ptz_metrics = ptz_metrics
