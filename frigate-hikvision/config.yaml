@@ -1,14 +1,17 @@
 name: "Frigate (Hikvision Mod)"
-version: "0.16.4-2"  # <--- CHANGED (Forces update)
+version: "0.16.4-3"
 slug: "frigate_hikvision"
 description: "Frigate NVR with Position-Based ONVIF"
 url: "https://github.com/blakeblackshear/frigate"
 arch:
   - amd64
   - aarch64
-init: false          # <--- NEW (Fixes the crash)
+init: false
 startup: application
 boot: auto
+ingress: true           # <--- This adds the "Open Web UI" button
+ingress_port: 5000      # <--- This tells HA which internal port to show
+panel_icon: mdi:cctv    # <--- This gives you the camera icon
 ports:
   5000/tcp: 5001
   8554/tcp: 8556
