@@ -2,9 +2,8 @@ name: Daily Frigate Update Check
 
 on:
   schedule:
-    # Run every day at 04:00 AM UTC
-    - cron: '0 4 * * *'
-  workflow_dispatch: # Allows you to click a button to run it manually
+    - cron: '0 4 * * *' # Runs at 4:00 AM UTC
+  workflow_dispatch: # Allows manual run
 
 permissions:
   contents: write
@@ -19,39 +18,36 @@ jobs:
       - name: Get Latest Frigate Version
         id: get_version
         run: |
-          # Ask GitHub for the latest release tag of Frigate
           LATEST_TAG=$(curl -s https://api.github.com/repos/blakeblackshear/frigate/releases/latest | jq -r .tag_name)
-          # Remove 'v' if present (e.g. v0.17.0 -> 0.17.0)
           CLEAN_VERSION="${LATEST_TAG#v}"
           echo "latest_version=$CLEAN_VERSION" >> $GITHUB_OUTPUT
-          echo "Found latest version: $CLEAN_VERSION"
 
       - name: Check Current Version
         id: check_current
         run: |
-          # Read the current version from Dockerfile
-          CURRENT_VERSION=$(grep "FROM" Dockerfile | cut -d':' -f2)
+          # FIX: Look inside the frigate-hikvision folder
+          CURRENT_VERSION=$(grep "FROM" frigate-hikvision/Dockerfile | cut -d':' -f2)
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Update Files (If New Version Found)
+      - name: Update Files
+        # Only run if versions don't match
         if: steps.get_version.outputs.latest_version != steps.check_current.outputs.current_version
         run: |
           NEW_VER="${{ steps.get_version.outputs.latest_version }}"
+          echo "Updating from old version to $NEW_VER..."
           
-          # 1. Update Dockerfile
-          sed -i "s/FROM ghcr.io\/blakeblackshear\/frigate:.*/FROM ghcr.io\/blakeblackshear\/frigate:$NEW_VER/" Dockerfile
+          # FIX: Update files inside the folder
+          sed -i "s/FROM ghcr.io\/blakeblackshear\/frigate:.*/FROM ghcr.io\/blakeblackshear\/frigate:$NEW_VER/" frigate-hikvision/Dockerfile
           
-          # 2. Update config.yaml (and reset build number to -1)
-          # Finds "version: something" and replaces it with "version: "0.17.0-1""
-          sed -i "s/version: .*/version: \"$NEW_VER-1\"/" config.yaml
-          
-          echo "Updated files to version $NEW_VER"
+          # Update config.yaml version
+          sed -i "s/version: .*/version: \"$NEW_VER-1\"/" frigate-hikvision/config.yaml
 
-      - name: Commit and Push Changes
+      - name: Commit and Push
+        # Only run if versions don't match
         if: steps.get_version.outputs.latest_version != steps.check_current.outputs.current_version
         run: |
           git config user.name "GitHub Action Bot"
           git config user.email "actions@github.com"
-          git add Dockerfile config.yaml
+          git add frigate-hikvision/Dockerfile frigate-hikvision/config.yaml
           git commit -m "Auto-update to Frigate $NEW_VER"
           git push
