@@ -1,5 +1,5 @@
 name: "Frigate (Hikvision Mod)"
-version: "0.16.4-9"
+version: "0.16.4-10"
 slug: "frigate_hikvision"
 description: "Frigate NVR with Position-Based ONVIF"
 url: "https://github.com/blakeblackshear/frigate"
@@ -12,6 +12,7 @@ boot: auto
 ingress: true
 ingress_port: 5000
 panel_icon: mdi:cctv
+full_access: true      # <--- THIS IS THE MISSING KEY
 ports:
   5000/tcp: 5000
   8554/tcp: 8554
