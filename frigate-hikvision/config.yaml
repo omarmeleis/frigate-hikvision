@@ -1,5 +1,5 @@
 name: "Frigate (Hikvision Mod)"
-version: "0.16.4-3"
+version: "0.16.4-4"
 slug: "frigate_hikvision"
 description: "Frigate NVR with Position-Based ONVIF"
 url: "https://github.com/blakeblackshear/frigate"
@@ -9,14 +9,14 @@ arch:
 init: false
 startup: application
 boot: auto
-ingress: true           # <--- This adds the "Open Web UI" button
-ingress_port: 5000      # <--- This tells HA which internal port to show
-panel_icon: mdi:cctv    # <--- This gives you the camera icon
+ingress: true
+ingress_port: 5000      # <--- The Critical Fix (Tells UI where to look)
+panel_icon: mdi:cctv
 ports:
-  5000/tcp: 5001
-  8554/tcp: 8556
-  8555/tcp: 8557
-  8555/udp: 8557
+  5000/tcp: 5000        # <--- Standard Web Port
+  8554/tcp: 8554        # <--- Standard RTSP Port
+  8555/tcp: 8555        # <--- Standard WebRTC Port
+  8555/udp: 8555        # <--- Standard WebRTC Port
 map:
   - config:rw
   - media:rw
