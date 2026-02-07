@@ -1,5 +1,5 @@
 name: "Frigate (Hikvision Mod)"
-version: "0.16.4-10"
+version: "0.16.4-11"
 slug: "frigate_hikvision"
 description: "Frigate NVR with Position-Based ONVIF"
 url: "https://github.com/blakeblackshear/frigate"
