@@ -1,0 +1,21 @@
+name: "Frigate (Hikvision Mod)"
+version: "0.16.4-1"
+slug: "frigate_hikvision"
+description: "Frigate NVR with Position-Based ONVIF"
+url: "https://github.com/blakeblackshear/frigate"
+arch:
+  - amd64
+  - aarch64
+startup: application
+boot: auto
+ports:
+  5000/tcp: 5001
+  8554/tcp: 8556
+  8555/tcp: 8557
+  8555/udp: 8557
+map:
+  - config:rw
+  - media:rw
+options: {}
+schema: {}
+image: "ghcr.io/blakeblackshear/frigate:{version}"
