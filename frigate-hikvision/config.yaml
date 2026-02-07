@@ -18,4 +18,3 @@ map:
   - media:rw
 options: {}
 schema: {}
-image: "ghcr.io/blakeblackshear/frigate:{version}"
