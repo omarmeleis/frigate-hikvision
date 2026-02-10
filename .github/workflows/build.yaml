@@ -38,9 +38,10 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./frigate-hikvision
+          file: ./frigate-hikvision/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/omarmeleis/frigate-hikvision:latest
-            ghcr.io/omarmeleis/frigate-hikvision:0.16-hik
+            ghcr.io/omarmeleis/frigate-hikvision:0.16.0-hik1
