@@ -8,8 +8,8 @@ on:
     branches:
       - main
     paths:
-      - 'patches/**'
-      - 'Dockerfile'
+      - 'frigate-hikvision/patches/**'
+      - 'frigate-hikvision/Dockerfile'
 
 jobs:
   build:
