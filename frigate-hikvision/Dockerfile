@@ -2,7 +2,7 @@
 ARG FRIGATE_VERSION=stable
 
 # Pull the official image
-FROM ghcr.io/blakeblackshear/frigate:${FRIGATE_VERSION}
+FROM ghcr.io/blakeblackshear/frigate:0.16.4
 
 # Standard practice: Set working directory
 WORKDIR /opt/frigate
