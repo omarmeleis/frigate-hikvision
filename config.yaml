@@ -14,17 +14,15 @@ ingress: true
 ingress_port: 5000
 panel_icon: mdi:cctv
 full_access: true
-ports:
-  5000/tcp: 5000
-  8554/tcp: 8554
-  8555/tcp: 8555
-  8555/udp: 8555
+privileged:
+  - NET_ADMIN
+  - SYS_ADMIN
+  - SYS_PTRACE
+  - SYS_NICE
+  - DAC_READ_SEARCH
 map:
   - addon_config:rw
   - media:rw
-devices:
-  - /dev/dri:/dev/dri
-  - /dev/dma_heap:/dev/dma_heap
-  - /dev/bus/usb:/dev/bus/usb
+  - share:rw
 options: {}
 schema: {}
