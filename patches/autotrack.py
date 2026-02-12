@@ -11,6 +11,8 @@ from typing import Any
 
 import cv2
 import numpy as np
+from ruamel.yaml import YAML  # <--- Added this for the fix
+
 from norfair.camera_motion import (
     HomographyTransformationGetter,
     MotionEstimator,
@@ -31,12 +33,42 @@ from frigate.const import (
 )
 from frigate.ptz.onvif import OnvifController
 from frigate.track.tracked_object import TrackedObject
-from frigate.util.builtin import update_yaml_file_bulk
 from frigate.util.config import find_config_file
 from frigate.util.image import SharedMemoryFrameManager, intersection_over_union
 
 logger = logging.getLogger(__name__)
 
+# --- FIX: Define the missing helper function locally ---
+def update_yaml_file_bulk(file_path, updates):
+    """Updates a YAML file while preserving comments."""
+    yaml = YAML()
+    yaml.preserve_quotes = True
+    
+    try:
+        with open(file_path, "r") as f:
+            config = yaml.load(f)
+        
+        if config is None:
+            logger.warning(f"Could not load config file {file_path} for updating.")
+            return
+
+        for key, value in updates.items():
+            keys = key.split(".")
+            current = config
+            try:
+                for k in keys[:-1]:
+                    current = current[k]
+                current[keys[-1]] = value
+            except KeyError:
+                logger.warning(f"Could not find key {key} in config file.")
+                continue
+
+        with open(file_path, "w") as f:
+            yaml.dump(config, f)
+            
+    except Exception as e:
+        logger.error(f"Failed to update config file: {e}")
+# -----------------------------------------------------
 
 def ptz_moving_at_frame_time(frame_time, ptz_start_time, ptz_stop_time):
     # Determine if the PTZ was in motion at the set frame time
@@ -279,10 +311,9 @@ class PtzAutoTracker:
                 self.ptz_metrics[camera].autotracker_enabled.value = False
                 return
 
-            # HIKVISION FIX: Removed the check that disables autotracking if MoveStatus is unsupported.
-            # We are calculating status via coordinates in onvif.py, so we force this to proceed.
+            # HIKVISION FIX: Removed MoveStatus check
             # move_status_supported = await self.onvif.get_service_capabilities(camera)
-            # ... (Check removed) ...
+            # ...
 
         if self.onvif.cams[camera]["init"]:
             await self.onvif.get_camera_status(camera)
