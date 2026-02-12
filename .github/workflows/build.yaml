@@ -8,8 +8,8 @@ on:
     branches:
       - main
     paths:
-      - 'frigate-hikvision/patches/**'
-      - 'frigate-hikvision/Dockerfile'
+      - 'patches/**'        # Watches the root patches folder
+      - 'Dockerfile'        # Watches the root Dockerfile
 
 jobs:
   build:
@@ -38,8 +38,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./frigate-hikvision
-          file: ./frigate-hikvision/Dockerfile
+          context: .
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
